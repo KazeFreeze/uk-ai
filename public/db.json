@@ -1,0 +1,66 @@
+{
+  "available_tags": [
+    "casual",
+    "formal",
+    "streetwear",
+    "goth",
+    "cyberpunk",
+    "summer",
+    "winter",
+    "beach",
+    "office",
+    "party",
+    "retro"
+  ],
+  "clothes": [
+    {
+      "id": "cl_001",
+      "name": "Blue Linen Shirt",
+      "type": "shirt",
+      "tags": [
+        "summer",
+        "beach",
+        "casual"
+      ],
+      "imageUrl": "/images/blue-linen-shirt.jpg",
+      "shopUrl": "https://mockstore.com/products/001"
+    },
+    {
+      "id": "cl_002",
+      "name": "Black Leather Jacket",
+      "type": "jacket",
+      "tags": [
+        "goth",
+        "cyberpunk",
+        "streetwear",
+        "party"
+      ],
+      "imageUrl": "/images/black-leather-jacket.jpg",
+      "shopUrl": "https://mockstore.com/products/002"
+    },
+    {
+      "id": "cl_003",
+      "name": "Khaki Chinos",
+      "type": "pants",
+      "tags": [
+        "casual",
+        "office",
+        "summer"
+      ],
+      "imageUrl": "/images/khaki-chinos.jpg",
+      "shopUrl": "https://mockstore.com/products/003"
+    },
+    {
+      "id": "cl_004",
+      "name": "Vintage Band Tee",
+      "type": "shirt",
+      "tags": [
+        "retro",
+        "streetwear",
+        "casual"
+      ],
+      "imageUrl": "/images/band-tee.jpg",
+      "shopUrl": "https://mockstore.com/products/004"
+    }
+  ]
+}
