@@ -33,15 +33,16 @@
   "products": [
     {
       "id": "cl_001",
-      "name": "Waveblast Co. SG Shop Listing",
-      "type": "accessories",
+      "name": "Y2K T-shirt Cute Shirts Retro Graphic",
+      "type": "tops",
       "tags": [
-        "general",
-        "streetwear",
-        "casual"
+        "y2k",
+        "retro",
+        "graphic",
+        "cute"
       ],
-      "imageUrl": "/images/waveblast-shop.jpg",
-      "shopUrl": "https://shopee.sg/waveblast.co.sg#product_list"
+      "imageUrl": "/images/etsy/y2k-retro-graphic-tee.jpg",
+      "shopUrl": "https://www.etsy.com/sg-en/listing/4333964754/y2k-t-shirt-cute-shirts-retro-graphic"
     },
     {
       "id": "cl_002",
@@ -505,6 +506,83 @@
       ],
       "imageUrl": "/images/killstar/morbidas-tale-mini-dress.jpg",
       "shopUrl": "https://us.killstar.com/products/morbidas-tale-mini-dress"
+    },
+    {
+      "id": "cl_038",
+      "name": "Y2K Future Tech Sunglasses",
+      "type": "accessories",
+      "tags": [
+        "y2k",
+        "retro",
+        "sunglasses",
+        "cyberpunk"
+      ],
+      "imageUrl": "/images/y2k/future-tech-sunglasses.jpg",
+      "shopUrl": "https://y2kdream.com/products/y2k-future-tech-sunglasses"
+    },
+    {
+      "id": "cl_039",
+      "name": "Y2K Dream Baggy Jeans Collection",
+      "type": "bottoms",
+      "tags": [
+        "y2k",
+        "denim",
+        "baggy",
+        "general"
+      ],
+      "imageUrl": "/images/y2k/baggy-jeans-collection.jpg",
+      "shopUrl": "https://y2kdream.com/collections/y2k-baggy-jeans"
+    },
+    {
+      "id": "cl_040",
+      "name": "Y2K Dream Jorts Collection",
+      "type": "bottoms",
+      "tags": [
+        "y2k",
+        "denim",
+        "shorts",
+        "general"
+      ],
+      "imageUrl": "/images/y2k/jorts-collection.jpg",
+      "shopUrl": "https://y2kdream.com/collections/y2k-jorts"
+    },
+    {
+      "id": "cl_041",
+      "name": "LitLookz Studio Y2K Clothing Collection",
+      "type": "tops",
+      "tags": [
+        "y2k",
+        "general",
+        "streetwear"
+      ],
+      "imageUrl": "/images/litlookz/y2k-collection.jpg",
+      "shopUrl": "https://www.litlookzstudio.com/collections/y2k-clothing"
+    },
+    {
+      "id": "cl_042",
+      "name": "Y2K Grunge Shirt Anime Graphic Tee",
+      "type": "tops",
+      "tags": [
+        "y2k",
+        "grunge",
+        "graphic",
+        "anime"
+      ],
+      "imageUrl": "/images/etsy/y2k-grunge-anime-tee.jpg",
+      "shopUrl": "https://www.etsy.com/sg-en/listing/1887210763/y2k-grunge-shirt-anime-graphic-tee"
+    },
+    {
+      "id": "cl_043",
+      "name": "Y2K Styled Blouse V-Neck Slim Fit",
+      "type": "tops",
+      "tags": [
+        "y2k",
+        "retro",
+        "slim_fit",
+        "blouse"
+      ],
+      "imageUrl": "/images/etsy/y2k-blouse-v-neck.jpg",
+      "shopUrl": "https://www.etsy.com/sg-en/listing/4390241070/y2k-styled-blouse-v-neck-slim-fit-button"
     }
   ]
 }
