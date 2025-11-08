@@ -2,14 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies for better caching
-COPY package*.json ./
-RUN npm install
-
-# Copy the rest of the application
-COPY . .
+# Install build tools needed for native npm modules
+RUN apk add --no-cache python3 make g++
 
 EXPOSE 3000
 
-# Development command
-CMD ["npm", "run", "dev"]
+# Install and run dev on startup
+CMD ["sh", "-c", "npm install && npm run dev"]
