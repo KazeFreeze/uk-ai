@@ -521,44 +521,6 @@
       "shopUrl": "https://y2kdream.com/products/y2k-future-tech-sunglasses"
     },
     {
-      "id": "cl_039",
-      "name": "Y2K Dream Baggy Jeans Collection",
-      "type": "bottoms",
-      "tags": [
-        "y2k",
-        "denim",
-        "baggy",
-        "general"
-      ],
-      "imageUrl": "/images/y2k/baggy-jeans-collection.webp",
-      "shopUrl": "https://y2kdream.com/collections/y2k-baggy-jeans"
-    },
-    {
-      "id": "cl_040",
-      "name": "Y2K Dream Jorts Collection",
-      "type": "bottoms",
-      "tags": [
-        "y2k",
-        "denim",
-        "shorts",
-        "general"
-      ],
-      "imageUrl": "/images/y2k/jorts-collection.webp",
-      "shopUrl": "https://y2kdream.com/collections/y2k-jorts"
-    },
-    {
-      "id": "cl_041",
-      "name": "LitLookz Studio Y2K Clothing Collection",
-      "type": "tops",
-      "tags": [
-        "y2k",
-        "general",
-        "streetwear"
-      ],
-      "imageUrl": "/images/litlookz/y2k-collection.webp",
-      "shopUrl": "https://www.litlookzstudio.com/collections/y2k-clothing"
-    },
-    {
       "id": "cl_042",
       "name": "Y2K Grunge Shirt Anime Graphic Tee",
       "type": "tops",
