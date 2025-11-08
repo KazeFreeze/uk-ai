@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  # 1. Ollama AI Service
+  ollama:
+    image: ollama/ollama
+    container_name: ollama_service
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # Uncomment the 'deploy' section for NVIDIA GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # 2. Your Next.js App
+  app:
+    build:
+      context: ./app # Assumes your Next.js app is in a folder named 'app'
+      dockerfile: Dockerfile.dev
+    container_name: nextjs_app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      # Tells the adapter where to find the Ollama service
+      - OLLAMA_HOST=http://ollama:11434
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      ollama:
+        condition: service_started
+
+volumes:
+  ollama_data: # Persistent volume for your downloaded AI models
