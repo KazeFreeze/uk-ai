@@ -10,57 +10,501 @@
     "beach",
     "office",
     "party",
-    "retro"
+    "retro",
+    "minga_london",
+    "lewkin",
+    "acubi",
+    "vampire_freaks",
+    "killstar",
+    "waveblast",
+    "megablast",
+    "super_mario",
+    "general",
+    "brown",
+    "grey",
+    "black",
+    "striped",
+    "graphic",
+    "lace",
+    "denim",
+    "knit",
+    "skeleton"
   ],
-  "clothes": [
+  "products": [
     {
       "id": "cl_001",
-      "name": "Blue Linen Shirt",
-      "type": "shirt",
+      "name": "Waveblast Co. SG Shop Listing",
+      "type": "accessories",
       "tags": [
-        "summer",
-        "beach",
+        "general",
+        "streetwear",
         "casual"
       ],
-      "imageUrl": "/images/blue-linen-shirt.jpg",
-      "shopUrl": "https://mockstore.com/products/001"
+      "imageUrl": "/images/waveblast-shop.jpg",
+      "shopUrl": "https://shopee.sg/waveblast.co.sg#product_list"
     },
     {
       "id": "cl_002",
-      "name": "Black Leather Jacket",
-      "type": "jacket",
+      "name": "Trek Grey Cargo Jeans",
+      "type": "bottoms",
       "tags": [
-        "goth",
-        "cyberpunk",
-        "streetwear",
-        "party"
+        "minga_london",
+        "cargo",
+        "grey",
+        "streetwear"
       ],
-      "imageUrl": "/images/black-leather-jacket.jpg",
-      "shopUrl": "https://mockstore.com/products/002"
+      "imageUrl": "/images/minga/trek-grey-cargo-jeans.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/trek-grey-cargo-jeans"
     },
     {
       "id": "cl_003",
-      "name": "Khaki Chinos",
-      "type": "pants",
+      "name": "Astrea Grey Baby Tee",
+      "type": "tops",
       "tags": [
-        "casual",
-        "office",
-        "summer"
+        "minga_london",
+        "baby_tee",
+        "grey",
+        "top"
       ],
-      "imageUrl": "/images/khaki-chinos.jpg",
-      "shopUrl": "https://mockstore.com/products/003"
+      "imageUrl": "/images/minga/astrea-grey-baby-tee.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/astrea-grey-baby-tee"
     },
     {
       "id": "cl_004",
-      "name": "Vintage Band Tee",
-      "type": "shirt",
+      "name": "Moxie Black Cut Out Top",
+      "type": "tops",
       "tags": [
-        "retro",
-        "streetwear",
+        "minga_london",
+        "cut_out",
+        "black",
+        "crop_top"
+      ],
+      "imageUrl": "/images/minga/moxie-black-cut-out-top.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/moxie-black-cut-out-top"
+    },
+    {
+      "id": "cl_005",
+      "name": "Enigmatic Black Oversized Zip Up Hoodie",
+      "type": "tops",
+      "tags": [
+        "minga_london",
+        "oversized",
+        "black",
+        "zip_up"
+      ],
+      "imageUrl": "/images/minga/enigmatic-black-oversized-zip-up-hoodie.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/enigmatic-black-oversized-zip-up-hoodie"
+    },
+    {
+      "id": "cl_006",
+      "name": "Coraline Striped Scarf",
+      "type": "accessories",
+      "tags": [
+        "minga_london",
+        "scarf",
+        "striped"
+      ],
+      "imageUrl": "/images/minga/coraline-striped-scarf.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/coraline-striped-scarf"
+    },
+    {
+      "id": "cl_007",
+      "name": "Sigil Windbreaker Jacket",
+      "type": "tops",
+      "tags": [
+        "minga_london",
+        "windbreaker",
+        "outerwear"
+      ],
+      "imageUrl": "/images/minga/sigil-windbreaker-jacket.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/sigil-windbreaker-jacket"
+    },
+    {
+      "id": "cl_008",
+      "name": "Hexa Grey Zip Up Hoodie",
+      "type": "tops",
+      "tags": [
+        "minga_london",
+        "grey",
+        "zip_up"
+      ],
+      "imageUrl": "/images/minga/hexa-grey-zip-up-hoodie.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/hexa-grey-zip-up-hoodie"
+    },
+    {
+      "id": "cl_009",
+      "name": "Axl Black Top",
+      "type": "tops",
+      "tags": [
+        "minga_london",
+        "black",
+        "top"
+      ],
+      "imageUrl": "/images/minga/axl-black-top.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/axl-black-top"
+    },
+    {
+      "id": "cl_010",
+      "name": "Starburst Black Baggy Jeans",
+      "type": "bottoms",
+      "tags": [
+        "minga_london",
+        "baggy",
+        "black",
+        "pants"
+      ],
+      "imageUrl": "/images/minga/starburst-black-baggy-jeans.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/starburst-black-baggy-jeans"
+    },
+    {
+      "id": "cl_011",
+      "name": "Nova Star Claw Clip",
+      "type": "accessories",
+      "tags": [
+        "minga_london",
+        "hair",
+        "clip"
+      ],
+      "imageUrl": "/images/minga/nova-star-claw-clip.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/nova-star-claw-clip"
+    },
+    {
+      "id": "cl_012",
+      "name": "Astral Hair Clips Set",
+      "type": "accessories",
+      "tags": [
+        "minga_london",
+        "hair",
+        "clips_set"
+      ],
+      "imageUrl": "/images/minga/astral-hair-clips-set.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/astral-hair-clips-set"
+    },
+    {
+      "id": "cl_013",
+      "name": "Starspell Black Scarf",
+      "type": "accessories",
+      "tags": [
+        "minga_london",
+        "scarf",
+        "black"
+      ],
+      "imageUrl": "/images/minga/starspell-black-scarf.jpg",
+      "shopUrl": "https://us.mingalondon.com/products/starspell-black-scarf"
+    },
+    {
+      "id": "cl_014",
+      "name": "Off Shoulder Sweatshirt CO531",
+      "type": "tops",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "off_shoulder",
+        "knit"
+      ],
+      "imageUrl": "/images/lewkin/sweatshirt-co531.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/off-shoulder-sweatshirt-co531"
+    },
+    {
+      "id": "cl_015",
+      "name": "Off Shoulder Shirred Knit Top CO529",
+      "type": "tops",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "off_shoulder",
+        "knit"
+      ],
+      "imageUrl": "/images/lewkin/knit-top-co529.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/off-shoulder-shirred-knit-top-co529"
+    },
+    {
+      "id": "cl_016",
+      "name": "Alanna Sun Belt Baggy Jeans CO528",
+      "type": "bottoms",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "baggy",
+        "belted",
+        "denim"
+      ],
+      "imageUrl": "/images/lewkin/baggy-jeans-co528.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/alanna-sun-belt-baggy-jeans-co528"
+    },
+    {
+      "id": "cl_017",
+      "name": "Casual Off Shoulder Top CO520",
+      "type": "tops",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "off_shoulder",
         "casual"
       ],
-      "imageUrl": "/images/band-tee.jpg",
-      "shopUrl": "https://mockstore.com/products/004"
+      "imageUrl": "/images/lewkin/off-shoulder-top-co520.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/casual-off-shoulder-top-co520"
+    },
+    {
+      "id": "cl_018",
+      "name": "Minnell Vintage Wash Wide Leg Jeans IO517",
+      "type": "bottoms",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "wide_leg",
+        "vintage_wash",
+        "denim"
+      ],
+      "imageUrl": "/images/lewkin/wide-leg-jeans-io517.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/minnell-vintage-wash-wide-leg-jeans-io517"
+    },
+    {
+      "id": "cl_019",
+      "name": "Striped Embroidery Long Sleeve Tee IO520",
+      "type": "tops",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "striped",
+        "long_sleeve",
+        "embroidery"
+      ],
+      "imageUrl": "/images/lewkin/long-sleeve-tee-io520.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/striped-embroidery-long-sleeve-tee-io520"
+    },
+    {
+      "id": "cl_020",
+      "name": "Baggy Black Graphic Cotton Pants CO521",
+      "type": "bottoms",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "baggy",
+        "black",
+        "graphic"
+      ],
+      "imageUrl": "/images/lewkin/cotton-pants-co521.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/baggy-black-graphic-cotton-pants-co521"
+    },
+    {
+      "id": "cl_021",
+      "name": "Miller Balloon Baggy Jeans CO515 (A)",
+      "type": "bottoms",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "baggy",
+        "balloon",
+        "denim"
+      ],
+      "imageUrl": "/images/lewkin/miller-jeans-co515.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/miller-balloon-baggy-jeans-co515"
+    },
+    {
+      "id": "cl_022",
+      "name": "Remi Washed Baggy Jeans CO515 (B)",
+      "type": "bottoms",
+      "tags": [
+        "lewkin",
+        "acubi",
+        "baggy",
+        "washed",
+        "denim"
+      ],
+      "imageUrl": "/images/lewkin/remi-jeans-co515.jpg",
+      "shopUrl": "https://lewkin.com/collections/acubi-fashion/products/remi-washed-baggy-jeans-co515"
+    },
+    {
+      "id": "cl_023",
+      "name": "Waveblast Oversize T-Shirt Lattres Toffe",
+      "type": "tops",
+      "tags": [
+        "waveblast",
+        "oversize",
+        "brown",
+        "casual"
+      ],
+      "imageUrl": "/images/waveblast/lattres-toffe.jpg",
+      "shopUrl": "https://shopee.sg/Waveblast-Oversize-T-Shirt-Lattres-Toffe-16s-i.423246985.44023328770?extraParams={\"display_model_id\"%3A276897518852}"
+    },
+    {
+      "id": "cl_024",
+      "name": "Waveblast Oversize T-Shirt Tottum Black",
+      "type": "tops",
+      "tags": [
+        "waveblast",
+        "oversize",
+        "black",
+        "casual"
+      ],
+      "imageUrl": "/images/waveblast/tottum-black.jpg",
+      "shopUrl": "https://shopee.sg/Waveblast-Oversize-T-Shirt-Tottum-Black-i.423246985.22683043311?extraParams={\"display_model_id\"%3A99454905102}"
+    },
+    {
+      "id": "cl_025",
+      "name": "Waveblast Short Pants Basic Black",
+      "type": "bottoms",
+      "tags": [
+        "waveblast",
+        "basic",
+        "black",
+        "bottoms"
+      ],
+      "imageUrl": "/images/waveblast/shorts-black.jpg",
+      "shopUrl": "https://shopee.sg/Waveblast-Short-Pants-Basic-Black-i.423246985.23728889454?extraParams={\"display_model_id\"%3A168061863188}"
+    },
+    {
+      "id": "cl_026",
+      "name": "Waveblast Short Pants Basic Misty",
+      "type": "bottoms",
+      "tags": [
+        "waveblast",
+        "basic",
+        "grey",
+        "bottoms"
+      ],
+      "imageUrl": "/images/waveblast/shorts-misty.jpg",
+      "shopUrl": "https://shopee.sg/Waveblast-Short-Pants-Basic-Misty-i.423246985.40218031034?extraParams={\"display_model_id\"%3A266483856419}"
+    },
+    {
+      "id": "cl_027",
+      "name": "Megablast Sun Vibration Oversized T-Shirt",
+      "type": "tops",
+      "tags": [
+        "megablast",
+        "oversize",
+        "graphic",
+        "casual"
+      ],
+      "imageUrl": "/images/megablast/sun-vibration-tee.jpg",
+      "shopUrl": "https://shopee.sg/Megablast-–-Sun-Vibration-Oversized-Combed-24S-T-Shirt-i.954846153.20585859751?extraParams={\"display_model_id\"%3A157085318756%2C\"model_selection_logic\"%3A3}"
+    },
+    {
+      "id": "cl_028",
+      "name": "2025 Super Mario 85 T-Shirt Game Print",
+      "type": "tops",
+      "tags": [
+        "super_mario",
+        "game_print",
+        "harajuku",
+        "streetwear"
+      ],
+      "imageUrl": "/images/mario-85-tee.jpg",
+      "shopUrl": "https://shopee.sg/2025-Super-Mario-85-T-Shirt-Game-Print-Men-Summer-Short-Sleeve-Fashion-Cotton-Streetwear-Harajuku-Plus-Size-Casual-Fitness-Tops-Tees-i.84707037.7434274615?extraParams={\"display_model_id\"%3A18030860910%2C\"model_selection_logic\"%3A3}"
+    },
+    {
+      "id": "cl_029",
+      "name": "Shadow Empress Horned Headpiece",
+      "type": "accessories",
+      "tags": [
+        "vampire_freaks",
+        "goth",
+        "headpiece"
+      ],
+      "imageUrl": "/images/vampirefreaks/shadow-empress-headpiece.jpg",
+      "shopUrl": "https://vampirefreaks.com/collections/new-items/products/shadow-empress-horned-headpiece"
+    },
+    {
+      "id": "cl_030",
+      "name": "Gravewing Fishnet Top",
+      "type": "tops",
+      "tags": [
+        "vampire_freaks",
+        "goth",
+        "fishnet",
+        "top"
+      ],
+      "imageUrl": "/images/vampirefreaks/gravewing-fishnet-top.jpg",
+      "shopUrl": "https://vampirefreaks.com/collections/new-items/products/gravewing-fishnet-top"
+    },
+    {
+      "id": "cl_031",
+      "name": "Monster Chained Harness Black",
+      "type": "accessories",
+      "tags": [
+        "vampire_freaks",
+        "goth",
+        "harness",
+        "black"
+      ],
+      "imageUrl": "/images/vampirefreaks/monster-chained-harness.jpg",
+      "shopUrl": "https://vampirefreaks.com/collections/new-items/products/monster-chained-harness-black"
+    },
+    {
+      "id": "cl_032",
+      "name": "Dead Inside Fingerless Skeleton Gloves",
+      "type": "accessories",
+      "tags": [
+        "vampire_freaks",
+        "goth",
+        "gloves",
+        "skeleton"
+      ],
+      "imageUrl": "/images/vampirefreaks/dead-inside-gloves.jpg",
+      "shopUrl": "https://vampirefreaks.com/collections/top-sellers/products/dead-inside-fingerless-skeleton-gloves"
+    },
+    {
+      "id": "cl_033",
+      "name": "Deadly Affection Handbag",
+      "type": "bags",
+      "tags": [
+        "killstar",
+        "goth",
+        "accessory",
+        "handbag"
+      ],
+      "imageUrl": "/images/killstar/deadly-affection-handbag.jpg",
+      "shopUrl": "https://us.killstar.com/products/deadly-affection-handbag"
+    },
+    {
+      "id": "cl_034",
+      "name": "Euphemia Mini Skirt",
+      "type": "bottoms",
+      "tags": [
+        "killstar",
+        "goth",
+        "mini_skirt"
+      ],
+      "imageUrl": "/images/killstar/euphemia-mini-skirt.jpg",
+      "shopUrl": "https://us.killstar.com/products/euphemia-mini-skirt"
+    },
+    {
+      "id": "cl_035",
+      "name": "Ethelred Top",
+      "type": "tops",
+      "tags": [
+        "killstar",
+        "goth",
+        "lace",
+        "top"
+      ],
+      "imageUrl": "/images/killstar/ethelred-top.jpg",
+      "shopUrl": "https://us.killstar.com/products/ethelred-top"
+    },
+    {
+      "id": "cl_036",
+      "name": "Romantic Cottage Boots",
+      "type": "shoe",
+      "tags": [
+        "killstar",
+        "goth",
+        "boots"
+      ],
+      "imageUrl": "/images/killstar/romantic-cottage-boots.jpg",
+      "shopUrl": "https://us.killstar.com/products/romantic-cottage-boots"
+    },
+    {
+      "id": "cl_037",
+      "name": "Morbidas Tale Mini Dress",
+      "type": "tops",
+      "tags": [
+        "killstar",
+        "goth",
+        "mini_dress"
+      ],
+      "imageUrl": "/images/killstar/morbidas-tale-mini-dress.jpg",
+      "shopUrl": "https://us.killstar.com/products/morbidas-tale-mini-dress"
     }
   ]
 }
