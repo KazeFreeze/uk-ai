@@ -1,11 +1,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// 1. Initialize the Gemini Client
+// Initialize the Gemini Client
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
   throw new Error("GEMINI_API_KEY is not set in environment variables");
 }
+
 const genAI = new GoogleGenerativeAI(apiKey);
+// Use Gemini 2.0 or 2.5 - Gemini 1.5 models are retired
+// Options: gemini-2.5-flash, gemini-2.0-flash, gemini-2.5-pro
+const MODEL_NAME = "gemini-2.5-flash";
+
+// Use a single model instance for both text and vision
+const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
 /**
  * Helper function to parse the AI's JSON response,
@@ -15,95 +22,137 @@ function parseAiResponse(rawText: string): string[] {
   try {
     // Clean the text: remove markdown backticks and 'json' label
     const cleanedText = rawText
-      .replace(/```json\n/g, "")
-      .replace(/```/g, "")
+      .replace(/```json\s*/g, "")
+      .replace(/```\s*/g, "")
       .trim();
-    return JSON.parse(cleanedText) as string[];
+
+    const parsed = JSON.parse(cleanedText);
+
+    // Ensure we return an array
+    if (!Array.isArray(parsed)) {
+      console.error("AI response is not an array:", parsed);
+      return [];
+    }
+
+    return parsed as string[];
   } catch (error) {
-    console.error("Failed to parse AI JSON response:", rawText);
-    return []; // Return empty on failure
+    console.error("Failed to parse AI JSON response:", rawText, error);
+    return [];
   }
 }
 
 /**
  * AI Adapter for turning a text theme into "mood tags"
  */
-export async function getTagsFromText(theme: string, available_tags: string[]): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+export async function getTagsFromText(
+  theme: string,
+  available_tags: string[]
+): Promise<string[]> {
+  if (!theme || theme.trim().length === 0) {
+    throw new Error("Theme cannot be empty");
+  }
 
-  const systemPrompt = `
-    You are an expert fashion stylist AI. Your ONLY job is to analyze a user's
-    theme and return a JSON array of tags that match it.
-    
-    You MUST ONLY use tags from this list: ${available_tags.join(', ')}.
-    You MUST ONLY respond with a valid JSON array inside a markdown code block.
-    
-    Example Response:
-    \`\`\`json
-    ["casual", "summer", "beach"]
-    \`\`\`
+  if (!available_tags || available_tags.length === 0) {
+    throw new Error("Available tags list cannot be empty");
+  }
 
-    User's Theme: "${theme}"
-  `;
+  const systemPrompt = `You are an expert fashion stylist AI. Your ONLY job is to analyze a user's theme and return a JSON array of tags that match it.
+
+You MUST ONLY use tags from this list: ${available_tags.join(", ")}.
+You MUST respond with ONLY a valid JSON array. No markdown, no code blocks, no explanations.
+
+Example Response:
+["casual", "summer", "beach"]
+
+User's Theme: "${theme}"
+
+Return only the JSON array:`;
 
   try {
     console.log("Connecting to Gemini for text prompt...");
+
     const result = await model.generateContent(systemPrompt);
-    const rawText = result.response.text();
+    const response = await result.response;
+    const rawText = response.text();
+
+    console.log("Gemini raw response:", rawText);
+
     const tags = parseAiResponse(rawText);
 
-    console.log("Gemini text response (tags):", tags);
-    return tags;
+    // Filter to only include valid tags
+    const validTags = tags.filter((tag) =>
+      available_tags.includes(tag.toLowerCase())
+    );
 
+    console.log("Gemini text response (tags):", validTags);
+    return validTags;
   } catch (error: unknown) {
     console.error("Error in getTagsFromText (Gemini):", error);
-    throw new Error("Failed to get tags from AI.");
+    throw new Error(
+      `Failed to get tags from AI: ${error instanceof Error ? error.message : "Unknown error"}`
+    );
   }
 }
 
 /**
  * AI Adapter for turning an image into "mood tags"
- * NOTE: This function's signature has changed to accept a mimeType.
  */
 export async function getTagsFromImage(
   base64Image: string,
   mimeType: string,
   available_tags: string[]
 ): Promise<string[]> {
+  if (!base64Image || base64Image.trim().length === 0) {
+    throw new Error("Base64 image cannot be empty");
+  }
 
-  const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+  if (!mimeType || !mimeType.startsWith("image/")) {
+    throw new Error("Invalid mime type for image");
+  }
 
-  const systemPrompt = `
-    You are an expert fashion analyst. Analyze the clothes in this image
-    and return a JSON array of "mood tags" that describe its style.
-    
-    You MUST ONLY use tags from this list: ${available_tags.join(', ')}.
-    You MUST ONLY respond with a valid JSON array inside a markdown code block.
-    
-    Example Response:
-    \`\`\`json
-    ["streetwear", "casual"]
-    \`\`\`
-  `;
+  if (!available_tags || available_tags.length === 0) {
+    throw new Error("Available tags list cannot be empty");
+  }
+
+  const systemPrompt = `You are an expert fashion analyst. Analyze the clothes in this image and return a JSON array of "mood tags" that describe its style.
+
+You MUST ONLY use tags from this list: ${available_tags.join(", ")}.
+You MUST respond with ONLY a valid JSON array. No markdown, no code blocks, no explanations.
+
+Example Response:
+["streetwear", "casual"]
+
+Return only the JSON array:`;
 
   const imagePart = {
     inlineData: {
       data: base64Image,
-      mimeType: mimeType, // e.g., "image/jpeg", "image/png"
+      mimeType: mimeType,
     },
   };
 
   try {
     console.log("Connecting to Gemini for image analysis...");
+
     const result = await model.generateContent([systemPrompt, imagePart]);
-    const rawText = result.response.text();
+    const response = await result.response;
+    const rawText = response.text();
+
+    console.log("Gemini raw response:", rawText);
+
     const tags = parseAiResponse(rawText);
 
-    console.log("Gemini image response (tags):", tags);
-    return tags;
+    // Filter to only include valid tags
+    const validTags = tags.filter((tag) =>
+      available_tags.includes(tag.toLowerCase())
+    );
 
+    console.log("Gemini image response (tags):", validTags);
+    return validTags;
   } catch (error: unknown) {
     console.error("Error in getTagsFromImage (Gemini):", error);
-    throw new Error("Failed to get tags from AI image.");
+    throw new Error(
+      `Failed to get tags from AI image: ${error instanceof Error ? error.message : "Unknown error"}`
+    );
   }
 }

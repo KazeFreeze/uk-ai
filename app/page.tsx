@@ -4,15 +4,15 @@ import { useState, FormEvent } from 'react';
 import { ClothingItem, OutfitSet } from './lib/types'; // Import shared types
 
 // --- Component for a single clothing item ---
-function OutfitItem({ item, tags, onReshuffle }: {
+function OutfitItem({ item, onReshuffle }: {
   item: ClothingItem | null;
-  tags: string[];
   onReshuffle: (type: string, id: string) => void;
 }) {
   if (!item) {
     return (
       <div className="item-card placeholder">
-        <p>No item found for this category and style.</p>
+        {/* Added a dynamic message for clarity */}
+        <p>No item found for this style.</p>
       </div>
     );
   }
@@ -87,7 +87,6 @@ export default function Home() {
       setIsLoading(false);
       setPrompt("");
       setImageFile(null);
-      // Clear the file input
       (document.getElementById('file-input') as HTMLInputElement).value = "";
     }
   };
@@ -115,7 +114,6 @@ export default function Home() {
       const { newItem } = await res.json();
 
       if (newItem) {
-        // Update the outfit state with the new item
         setOutfit(prevOutfit => ({
           ...prevOutfit!,
           [item_type]: newItem,
@@ -190,9 +188,10 @@ export default function Home() {
 
         {outfit && (
           <div className="outfit-grid">
-            <OutfitItem item={outfit.top} tags={activeTags} onReshuffle={handleReshuffle} />
-            <OutfitItem item={outfit.bottom} tags={activeTags} onReshuffle={handleReshuffle} />
-            <OutfitItem item={outfit.jacket} tags={activeTags} onReshuffle={handleReshuffle} />
+            {/* --- FIX: Use 'tops', 'bottoms', and 'accessories' --- */}
+            <OutfitItem item={outfit.tops} onReshuffle={handleReshuffle} />
+            <OutfitItem item={outfit.bottoms} onReshuffle={handleReshuffle} />
+            <OutfitItem item={outfit.accessories} onReshuffle={handleReshuffle} />
           </div>
         )}
       </main>

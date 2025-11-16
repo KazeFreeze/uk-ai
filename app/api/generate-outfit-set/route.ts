@@ -1,24 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-// --- FIX: Update the import path ---
 import { getTagsFromText, getTagsFromImage } from '@/app/lib/aiAdapter';
 import { loadDb } from '@/app/lib/db';
 import { assembleSetFromTags } from '@/app/lib/outfitLogic';
 
 export async function POST(request: NextRequest) {
   try {
-    const { available_tags } = loadDb();
+    // 1. Load DB ONCE and get 'products'
+    const { available_tags, products } = loadDb(); // <-- Was 'clothes'
 
+    // 2. Get form data (text or image)
     const formData = await request.formData();
     const theme = formData.get('theme') as string | null;
     const imageFile = formData.get('image') as File | null;
 
     let tags: string[] = [];
 
+    // 3. Call the correct AI Adapter
     if (imageFile) {
-      // --- FIX: We now need the mimeType for Gemini ---
       const bytes = await imageFile.arrayBuffer();
       const base64Image = Buffer.from(bytes).toString('base64');
-      const mimeType = imageFile.type; // Get the file's mime type
+      const mimeType = imageFile.type;
 
       tags = await getTagsFromImage(base64Image, mimeType, available_tags);
 
@@ -28,8 +29,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No theme or image provided' }, { status: 400 });
     }
 
-    const outfitSet = assembleSetFromTags(tags);
+    // 4. Call the Outfit Logic, passing 'products'
+    const outfitSet = assembleSetFromTags(tags, products); // <-- Was 'clothes'
 
+    // 5. Return the result
     return NextResponse.json({ outfit: outfitSet, tags: tags });
 
   } catch (error: unknown) {

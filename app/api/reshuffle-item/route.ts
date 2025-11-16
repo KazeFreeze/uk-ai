@@ -10,13 +10,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields: tags, item_type, exclude_id' }, { status: 400 });
     }
 
-    const { clothes } = loadDb();
+    const { products } = loadDb(); // <-- Was 'clothes'
 
     // 1. Find all items of the correct type that match the tags
-    const candidates = clothes.filter((item: ClothingItem) => {
+    const candidates = products.filter((item: ClothingItem) => { // <-- Was 'clothes'
       return (
-        item.type === item_type && // Matches the type (e.g., 'top')
-        tags.every((tag: string) => item.tags.includes(tag)) // Matches all tags
+        item.type === item_type &&
+        tags.every((tag: string) => item.tags.includes(tag))
       );
     });
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ newItem: newOptions[randomIndex] });
     } else {
       // No other options found, return the original item
-      const originalItem = clothes.find(item => item.id === exclude_id);
+      const originalItem = products.find(item => item.id === exclude_id); // <-- Was 'clothes'
       return NextResponse.json({ newItem: originalItem, message: 'No other items match this style.' });
     }
 

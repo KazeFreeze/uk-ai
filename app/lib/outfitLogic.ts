@@ -1,15 +1,14 @@
-import { loadDb } from './db';
 import { ClothingItem, OutfitSet } from './types';
 
 /**
- * Assembles a complete outfit set (top, bottom, jacket)
+ * Assembles a complete outfit set
  * by filtering the database by a list of AI-generated tags.
+ * @param tags - An array of tags from the AI.
+ * @param products - The complete array of clothing items from the DB.
  */
-export function assembleSetFromTags(tags: string[]): OutfitSet {
-  const { clothes } = loadDb();
-
+export function assembleSetFromTags(tags: string[], products: ClothingItem[]): OutfitSet {
   // 1. Filter all clothes that match ALL the required tags
-  const matchingClothes = clothes.filter((item: ClothingItem) =>
+  const matchingClothes = products.filter((item: ClothingItem) =>
     tags.every(tag => item.tags.includes(tag))
   );
 
@@ -24,9 +23,9 @@ export function assembleSetFromTags(tags: string[]): OutfitSet {
 
   // 3. Build the outfit by picking one random item from each category
   const outfitSet: OutfitSet = {
-    top: null,
-    bottom: null,
-    jacket: null,
+    tops: null,        // <-- Was 'top'
+    bottoms: null,     // <-- Was 'bottom'
+    accessories: null  // <-- Was 'jacket'
   };
 
   for (const type in outfitSet) {
