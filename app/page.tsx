@@ -1,254 +1,265 @@
-'use client';
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, ShoppingBag, Upload, X, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { mockProducts } from './data/mockProducts';
+"use client";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  sizes: string[];
-  locked?: boolean;
-}
+import React, { useState, useRef } from "react";
+import { OutfitSet, ClothingItem } from "@/app/lib/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Send, Upload, Loader2, RefreshCw } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const AIThrifter = () => {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Welcome. How can I help you today?' },
-  ]);
-  const [input, setInput] = useState('');
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+export default function OutfitGeneratorPage() {
+  const [outfit, setOutfit] = useState<OutfitSet | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [theme, setTheme] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [products, setProducts] = useState<Product[]>(mockProducts); // initially show all
-  const [cart, setCart] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  /**
+   * Handles the main form submission.
+   * Sends either a 'theme' string or an 'image' file to the API.
+   */
+  const handleGenerate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!theme && !imageFile) {
+      setError("Please enter a theme or upload an image.");
+      return;
+    }
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const files = Array.from(e.target.files);
-    const readers = files.map(
-      (file) =>
-        new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        })
-    );
-    Promise.all(readers).then((images) => setSelectedImages(images));
-  };
-
-  const handleSend = async () => {
-    if (!input.trim() && selectedImages.length === 0) return;
-
-    const userMessage = {
-      role: 'user',
-      content: input || 'Image(s) uploaded',
-      images: selectedImages,
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput('');
     setIsLoading(true);
+    setError(null);
+    setOutfit(null);
 
-    setTimeout(() => {
-      const assistantMessage = {
-        role: 'assistant',
-        content:
-          selectedImages.length > 0
-            ? 'Here are items matching your style.'
-            : `AI has suggested some products for you.`,
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+    const formData = new FormData();
+    if (imageFile) {
+      formData.append("image", imageFile);
+    } else {
+      formData.append("theme", theme);
+    }
 
-      // AI suggestion logic: only replace **unlocked products**
-      const unlockedProducts = products.filter((p) => p.locked);
-      const remainingProducts = mockProducts.filter(
-        (p) => !unlockedProducts.some((up) => up.id === p.id)
-      );
+    try {
+      const response = await fetch("/api/generate-outfit-set", {
+        method: "POST",
+        body: formData,
+      });
 
-      // simulate picking a few AI suggestions
-      const suggestedProducts = remainingProducts.slice(0, 3); // pick first 3, can randomize
-      const newProductList = [...unlockedProducts, ...suggestedProducts].map((p) => ({
-        ...p,
-        locked: p.locked ?? false,
-      }));
+      const data = await response.json();
 
-      setProducts(newProductList);
-      setSelectedImages([]);
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate outfit.");
+      }
+
+      setOutfit(data.outfit);
+      setTags(data.tags);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "An unknown error occurred.";
+      setError(msg);
+      console.error(err);
+    } finally {
       setIsLoading(false);
-    }, 1500);
-  };
-
-  const addToCart = (product: Product) => {
-    if (!cart.find((item) => item.id === product.id)) {
-      setCart([...cart, { ...product, quantity: 1 }]);
     }
   };
 
-  const removeFromCart = (productId: number) => {
-    setCart(cart.filter((item) => item.id !== productId));
+  /**
+   * Handles the "reshuffle" request for a single item.
+   * It uses the 'tags' state from the last successful generation.
+   */
+  const handleReshuffle = async (itemType: string, currentItemId: string) => {
+    if (tags.length === 0) {
+      alert("Please generate an outfit first before reshuffling.");
+      return;
+    }
+
+    console.log(`Reshuffling ${itemType}...`);
+
+    try {
+      const response = await fetch("/api/reshuffle-item", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tags: tags,
+          item_type: itemType,
+          exclude_id: currentItemId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to reshuffle item.");
+      }
+
+      if (data.message) {
+        alert(data.message);
+      }
+
+      setOutfit((prevOutfit) => {
+        if (!prevOutfit) return null;
+        return {
+          ...prevOutfit,
+          [itemType]: data.newItem,
+        };
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "An unknown error occurred.";
+      alert(`Error reshuffling: ${msg}`);
+      console.error(err);
+    }
   };
 
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const handleTextInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTheme(e.target.value);
+    if (e.target.value) {
+      setImageFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
-  const toggleLock = (index: number) => {
-    const newProducts = [...products];
-    newProducts[index].locked = !newProducts[index].locked;
-    setProducts(newProducts);
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+      setTheme("");
+    }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 relative">
-      {/* Left: Chat */}
-      <div className="w-1/2 border-r flex flex-col">
-        <ScrollArea className="flex-1 p-4">
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`mb-3 ${
-                msg.role === 'assistant' ? 'text-blue-700' : 'text-gray-900 text-right'
-              }`}
-            >
-              <p className="bg-white inline-block px-3 py-2 rounded-2xl shadow">
-                {msg.content}
-              </p>
-              {msg.images &&
-                msg.images.map((img: string, idx: number) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt="uploaded"
-                    className="mt-2 max-h-40 rounded-lg mx-auto"
-                  />
-                ))}
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </ScrollArea>
-
-        <div className="p-4 border-t flex gap-2 items-center">
+    <div className="flex h-screen bg-background text-foreground">
+      <div className="w-full md:w-1/3 border-r flex flex-col p-4 gap-4">
+        <h1 className="text-2xl font-bold">AI Outfit Generator</h1>
+        <form onSubmit={handleGenerate} className="flex flex-col gap-4">
           <Input
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            type="text"
+            placeholder="Enter a theme (e.g., 'summer beach party')"
+            value={theme}
+            onChange={handleTextInput}
+            disabled={isLoading}
           />
-          <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
-            <Upload className="w-4 h-4" />
-          </Button>
-          <Button onClick={handleSend} disabled={isLoading}>
-            {isLoading ? <Loader2 className="animate-spin w-4 h-4" /> : <Send className="w-4 h-4" />}
+
+          <span className="text-center text-sm text-muted-foreground">OR</span>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isLoading}
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            {imageFile ? imageFile.name : "Upload an Image"}
           </Button>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            multiple
-            onChange={handleImageUpload}
+            onChange={handleFileInput}
             className="hidden"
           />
-        </div>
+
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <Loader2 className="animate-spin w-4 h-4 mr-2" />
+            ) : (
+              <Send className="w-4 h-4 mr-2" />
+            )}
+            Generate Outfit
+          </Button>
+
+          {error && <p className="text-destructive text-center">{error}</p>}
+        </form>
+
+        {tags.length > 0 && !isLoading && (
+          <div className="border-t pt-4">
+            <h3 className="font-semibold">Generated Tags:</h3>
+            <p className="text-sm text-muted-foreground">{tags.join(", ")}</p>
+          </div>
+        )}
       </div>
 
-      {/* Right: Product list & cart */}
-      <div className="w-1/2 p-4 overflow-y-auto">
-        <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-          <ShoppingBag className="w-5 h-5" /> Products
-        </h2>
-        <div className="grid grid-cols-2 gap-4">
-          {products.map((product, index) => (
-            <Card key={product.id} className="hover:shadow-lg transition relative">
-              <CardContent className="p-3">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-32 w-full object-cover rounded-lg"
-                />
-                <h3 className="mt-2 font-semibold">{product.name}</h3>
-                <p className="text-sm text-gray-500">${product.price}</p>
-                <div className="flex gap-2 mt-2">
-                  {/* Lock Button */}
-                  <Button
-                    variant={product.locked ? 'destructive' : 'outline'}
-                    size="sm"
-                    onClick={() => toggleLock(index)}
-                  >
-                    {product.locked ? '🔒' : '🔓'}
-                  </Button>
-
-                  {/* Shuffle Button */}
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      if (product.locked) return;
-                      const available = mockProducts.filter(
-                        (p) => !products.some((prod) => prod.id === p.id)
-                      );
-                      if (available.length === 0) return;
-                      const random =
-                        available[Math.floor(Math.random() * available.length)];
-                      const newProducts = [...products];
-                      newProducts[index] = { ...random, locked: false };
-                      setProducts(newProducts);
-                    }}
-                  >
-                    🔀
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Cart */}
-        <div className="mt-6 border-t pt-4">
-          <h2 className="text-lg font-bold mb-2">Your Cart</h2>
-          {cart.length === 0 ? (
-            <p className="text-gray-500">No items yet.</p>
-          ) : (
-            <ul>
-              {cart.map((item) => (
-                <li key={item.id} className="flex justify-between items-center mb-2">
-                  <span>{item.name}</span>
-                  <span>${item.price}</span>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeFromCart(item.id)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
-          {cart.length > 0 && (
-            <div className="mt-4 font-semibold">Total: ${totalPrice.toFixed(2)}</div>
-          )}
-        </div>
-
-        
-          <Button
-    className="fixed bottom-6 right-6 px-6 py-3 !bg-black !bg-opacity-90 !text-white uppercase tracking-wide text-sm font-medium hover:!bg-opacity-100 transition-opacity duration-300 shadow-md z-50"
-    onClick={() => alert('Proceed to checkout!')}
-  >
-    Checkout $18.99
-  </Button>
-        
+      <div className="w-full md:w-2/3 p-4 overflow-y-auto">
+        <h2 className="text-lg font-bold mb-3">Your Outfit</h2>
+        {isLoading && !outfit && (
+          <div className="flex justify-center items-center h-full">
+            <Loader2 className="animate-spin w-12 h-12 text-primary" />
+          </div>
+        )}
+        {!isLoading && !outfit && (
+          <p className="text-muted-foreground">
+            Your generated outfit will appear here.
+          </p>
+        )}
+        {outfit && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(outfit).map(([type, item]) => (
+              <OutfitItemCard
+                key={type}
+                itemType={type}
+                item={item}
+                onReshuffle={() => item && handleReshuffle(type, item.id)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
-};
+}
 
-export default AIThrifter;
+/**
+ * A sub-component to display a single clothing item.
+ * This re-uses your <Card> component.
+ */
+function OutfitItemCard({
+  itemType,
+  item,
+  onReshuffle,
+}: {
+  itemType: string;
+  item: ClothingItem | null;
+  onReshuffle: () => void;
+}) {
+  const title = itemType.charAt(0).toUpperCase() + itemType.slice(1);
+
+  if (!item) {
+    return (
+      <Card className="hover:shadow-lg transition relative">
+        <CardContent className="p-3 flex flex-col items-center justify-center min-h-[200px]">
+          <h3 className="mt-2 font-semibold">{title}</h3>
+          <p className="text-sm text-muted-foreground text-center">
+            No {itemType} found for this style.
+          </T>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="hover:shadow-lg transition relative">
+      <CardContent className="p-3">
+        <img
+          src={item.imageUrl}
+          alt={item.name}
+          className="h-48 w-full object-cover rounded-lg"
+        />
+        <h3 className="mt-2 font-semibold truncate" title={item.name}>
+          {item.name}
+        </h3>
+        <a
+          href={item.shopUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-primary hover:underline"
+        >
+          Shop Now
+        </a>
+        <div className="flex gap-2 mt-2">
+          <Button variant="outline" size="sm" onClick={onReshuffle}>
+            <RefreshCw className="w-4 h-4 mr-1" />
+            Shuffle
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
