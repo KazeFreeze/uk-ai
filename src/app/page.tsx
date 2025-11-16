@@ -292,13 +292,13 @@ const AIThrifter = () => {
         </div>
       )}
 
-      <div className="w-full md:w-3/5 p-4 overflow-y-auto h-screen">
+      <div className="w-full md:w-3/5 p-4 overflow-y-auto h-screen pb-32">
         <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
           <ShoppingBag className="w-5 h-5" /> Products
         </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-[repeat(auto-fill,280px)] gap-4 justify-start">
           {products.map((product, index) => (
-            <Card key={`${product.id}-${index}`} className="hover:shadow-lg transition relative h-72 flex flex-col">
+            <Card key={`${product.id}-${index}`} className="hover:shadow-lg transition w-[280px] h-[340px] flex flex-col">
               <CardContent className="p-3 flex flex-col h-full">
                 <img
                   src={product.image}
@@ -367,19 +367,20 @@ const AIThrifter = () => {
         </div>
 
         {cart.length > 0 && (
-          <Button
-            className="fixed bottom-6 right-6 px-6 py-3 bg-black! bg-opacity-90! text-white! uppercase tracking-wide text-sm font-medium hover:bg-opacity-100!
- transition-opacity duration-300 shadow-md z-50"
-            onClick={() => alert('Proceed to checkout!')}
-          >
-            Checkout ${totalPrice.toFixed(2)}
-          </Button>
+          <div className="fixed bottom-0 left-0 md:left-[40%] right-0 bg-white border-t shadow-lg p-4 z-40">
+            <Button
+              className="w-full px-6 py-3 bg-black text-white uppercase tracking-wide text-sm font-medium hover:bg-gray-800 transition-colors duration-300"
+              onClick={() => alert('Proceed to checkout!')}
+            >
+              Checkout ${totalPrice.toFixed(2)}
+            </Button>
+          </div>
         )}
       </div>
 
       {!isChatOpen && (
         <Button
-          className="md:hidden fixed bottom-6 right-6 z-30 rounded-full w-14 h-14 p-0 shadow-lg"
+          className="md:hidden fixed bottom-20 right-6 z-50 rounded-full w-14 h-14 p-0 shadow-lg"
           onClick={() => setIsChatOpen(true)}
           variant="default"
         >
