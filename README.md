@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# uk-ai: AI-Powered Thrifting Stylist
 
-## Getting Started
+This project is an MVP for an AI-powered fashion application. It uses a Next.js frontend and a local AI service (Ollama) running `llava:7b` (Large Language-and-Vision Assistant) to analyze clothing images and generate outfit suggestions.
 
-First, run the development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Docker Desktop** (Required for running the AI service)
+- **Node.js 18+** (Required for local frontend development)
+
+## Configuration
+
+### 1. Environment Setup (.env.local)
+
+To run the Next.js app locally while connecting to the Dockerized AI, create a file named `.env.local` in the root directory:
+```env
+# .env.local
+# Points to the exposed Docker port (11435) for local dev
+OLLAMA_HOST=http://localhost:11435
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Docker Configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The `docker-compose.yml` is configured to:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Run Ollama on port **11435** (mapped to internal 11434).
+- Automatically pull and serve the `llava:7b` model on startup.
+- Host the Next.js app on port **3000**.
 
-## Learn More
+## Development Workflows
 
-To learn more about Next.js, take a look at the following resources:
+You can run this project in two ways depending on your needs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Option A: Hybrid Development (Recommended for Frontend Dev)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run the AI in Docker (stable) but the App locally (fast iteration).
 
-## Deploy on Vercel
+1. **Start the AI Service Only:**
+```bash
+   docker-compose up ollama
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   > **Note:** The first time you run this, it may take a few minutes to download the `llava:7b` model (approx 4GB).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Run Next.js Locally:**
+
+   Open a new terminal window and run:
+```bash
+   npm install
+   npm run dev
+```
+
+3. **Access the App:**
+
+   Go to [http://localhost:3000](http://localhost:3000). The app will connect to the AI at `http://localhost:11435`.
+
+### Option B: Full Docker Mode (Production Simulation)
+
+Run everything inside containers.
+
+1. **Start All Services:**
+```bash
+   docker-compose up --build
+```
+
+2. **Access the App:**
+
+   Go to [http://localhost:3000](http://localhost:3000).
+
+   In this mode, the app talks to the AI via the internal Docker network (`http://ollama:11434`).
+
+## Models Used
+
+### Unified Model: `llava:7b`
+
+Used for both:
+- **Visual Analysis** (analyzing uploaded images)
+- **Text Processing** (interpreting style themes)
+
+This reduces bandwidth and storage requirements by relying on a single multimodal model.

@@ -1,6 +1,8 @@
 import { Ollama } from 'ollama';
 
-// Read the host from the environment variable set in docker-compose.
+// Read the host from the environment variable.
+// In Docker: 'http://ollama:11434'
+// In Local Dev (via .env.local): 'http://localhost:11435'
 const host = process.env.OLLAMA_HOST || 'http://localhost:11434';
 const ollama = new Ollama({ host: host });
 
@@ -17,12 +19,13 @@ export async function getTagsFromText(theme: string, available_tags: string[]): 
   `;
 
   try {
-    console.log(`Connecting to Ollama at ${host} for text prompt...`);
+    console.log(`Connecting to Ollama at ${host} for text prompt (llava:7b)...`);
     const response = await ollama.generate({
-      model: "llama3", // Or your preferred model
+      model: "llava:7b",
       prompt: theme,
       system: systemPrompt,
       format: "json",
+      stream: false
     });
 
     const tags = JSON.parse(response.response) as string[];
@@ -41,30 +44,31 @@ export async function getTagsFromText(theme: string, available_tags: string[]): 
 /**
  * AI Adapter for turning an image into "mood tags"
  */
-/**
- * AI Adapter for turning an image into "mood tags"
- */
 export async function getTagsFromImage(base64Image: string, available_tags: string[]): Promise<string[]> {
   const systemPrompt = `
-    You are an expert fashion analyst.
-    Analyze the clothes in this image
+    You are an expert fashion analyst. Analyze the clothes in this image
     and return a JSON array of "mood tags" that describe its style.
+    
     You MUST ONLY use tags from this list: ${available_tags.join(', ')}.
     You MUST ONLY respond with a valid, non-explanatory JSON array.
   `;
 
   try {
-    console.log(`Connecting to Ollama at ${host} for image analysis...`);
+    console.log(`Connecting to Ollama at ${host} for image analysis (llava:7b)...`);
+
     const response = await ollama.generate({
       model: "llava:7b",
       prompt: "Analyze the clothing in this image and provide the matching mood tags.",
       images: [base64Image],
       system: systemPrompt,
       format: "json",
+      stream: false
     });
+
     const tags = JSON.parse(response.response) as string[];
     console.log("Ollama image response (tags):", tags);
     return tags;
+
   } catch (error: unknown) {
     console.error("Error in getTagsFromImage adapter:", error);
     if (error instanceof Error) {
