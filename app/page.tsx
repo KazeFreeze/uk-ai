@@ -192,6 +192,8 @@ export default function Home() {
             <OutfitItem item={outfit.tops} onReshuffle={handleReshuffle} />
             <OutfitItem item={outfit.bottoms} onReshuffle={handleReshuffle} />
             <OutfitItem item={outfit.accessories} onReshuffle={handleReshuffle} />
+            <OutfitItem item={outfit.bags} onReshuffle={handleReshuffle} />
+            <OutfitItem item={outfit.shoes} onReshuffle={handleReshuffle} />
           </div>
         )}
       </main>

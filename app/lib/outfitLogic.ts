@@ -23,9 +23,11 @@ export function assembleSetFromTags(tags: string[], products: ClothingItem[]): O
 
   // 3. Build the outfit by picking one random item from each category
   const outfitSet: OutfitSet = {
-    tops: null,        // <-- Was 'top'
-    bottoms: null,     // <-- Was 'bottom'
-    accessories: null  // <-- Was 'jacket'
+    tops: null,
+    bottoms: null,
+    accessories: null,
+    bags: null,
+    shoes: null,
   };
 
   for (const type in outfitSet) {

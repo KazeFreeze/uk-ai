@@ -24,6 +24,6 @@ export function loadDb(): Database {
   } catch (error) {
     console.error("Failed to load or parse db.json:", error);
     // If it fails, return an empty structure to prevent crashes
-    return { available_tags: [], clothes: [] };
+    return { available_tags: [], products: [] };
   }
 }

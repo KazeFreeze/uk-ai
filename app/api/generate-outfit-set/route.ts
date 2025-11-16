@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTagsFromText, getTagsFromImage } from '@/app/lib/aiAdapter';
+import { getTagsFromText, getTagsFromImage } from '@/app/lib/ollamaAdapter';
 import { loadDb } from '@/app/lib/db';
 import { assembleSetFromTags } from '@/app/lib/outfitLogic';
 
@@ -19,9 +19,8 @@ export async function POST(request: NextRequest) {
     if (imageFile) {
       const bytes = await imageFile.arrayBuffer();
       const base64Image = Buffer.from(bytes).toString('base64');
-      const mimeType = imageFile.type;
 
-      tags = await getTagsFromImage(base64Image, mimeType, available_tags);
+      tags = await getTagsFromImage(base64Image, available_tags);
 
     } else if (theme) {
       tags = await getTagsFromText(theme, available_tags);
