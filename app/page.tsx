@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Send, Upload, Loader2, RefreshCw } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function OutfitGeneratorPage() {
   const [outfit, setOutfit] = useState<OutfitSet | null>(null);
@@ -228,7 +227,7 @@ function OutfitItemCard({
           <h3 className="mt-2 font-semibold">{title}</h3>
           <p className="text-sm text-muted-foreground text-center">
             No {itemType} found for this style.
-          </T>
+          </p>
         </CardContent>
       </Card>
     );
