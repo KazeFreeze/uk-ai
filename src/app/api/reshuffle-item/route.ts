@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { loadDb } from '@/app/lib/db';
-import { ClothingItem } from '@/app/lib/types';
+import { loadDb } from '@/lib/db';
+import { ClothingItem } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields: tags, item_type, exclude_id' }, { status: 400 });
     }
 
-    const { products } = loadDb(); // <-- Was 'clothes'
+    const { products } = loadDb();
 
     // 1. Find all items of the correct type that match the tags
-    const candidates = products.filter((item: ClothingItem) => { // <-- Was 'clothes'
+    const candidates = products.filter((item: ClothingItem) => {
       return (
         item.type === item_type &&
         tags.every((tag: string) => item.tags.includes(tag))
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ newItem: newOptions[randomIndex] });
     } else {
       // No other options found, return the original item
-      const originalItem = products.find(item => item.id === exclude_id); // <-- Was 'clothes'
+      const originalItem = products.find(item => item.id === exclude_id);
       return NextResponse.json({ newItem: originalItem, message: 'No other items match this style.' });
     }
 

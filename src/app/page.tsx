@@ -5,19 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-// import { mockProducts } from './data/mockProducts'; // <- No longer needed
 
-// Import the backend types
-import { ClothingItem } from '@/app/lib/types';
+import { ClothingItem } from '@/lib/types';
 
-// Updated Product interface to match backend + UI needs
 interface Product {
-  id: string; // Changed to string to match backend 'cl_001'
+  id: string;
   name: string;
-  price: number; // Will be dummy data
+  price: number;
   image: string;
-  sizes: string[]; // Will be dummy data
-  type: string; // Added to know *what* to reshuffle (e.g., 'tops')
+  sizes: string[];
+  type: string;
   locked?: boolean;
 }
 
@@ -25,9 +22,9 @@ interface Product {
 const convertToProduct = (item: ClothingItem): Product => ({
   id: item.id,
   name: item.name,
-  price: 99.99, // Add dummy price
+  price: 99.99,
   image: item.imageUrl,
-  sizes: [], // Add dummy sizes
+  sizes: [],
   type: item.type,
   locked: false,
 });
@@ -38,7 +35,6 @@ const AIThrifter = () => {
   ]);
   const [input, setInput] = useState('');
 
-  // --- Updated state to handle File (for API) and Base64 (for UI preview) ---
   const [selectedImagesBase64, setSelectedImagesBase64] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -46,7 +42,6 @@ const AIThrifter = () => {
   const [products, setProducts] = useState<Product[]>([]); // <- No longer uses mockProducts
   const [cart, setCart] = useState<any[]>([]);
 
-  // --- State to store tags from the AI for reshuffles ---
   const [currentTags, setCurrentTags] = useState<string[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -63,11 +58,9 @@ const AIThrifter = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
 
-    // My backend only handles one image, so we take the first
     const file = e.target.files[0];
-    setSelectedFile(file); // <- Store the File for the API
+    setSelectedFile(file);
 
-    // Convert to Base64 for the chat UI preview
     const reader = new FileReader();
     reader.onload = () => {
       setSelectedImagesBase64([reader.result as string]);
@@ -149,7 +142,7 @@ const AIThrifter = () => {
   };
 
   /**
-   * This function now calls your REAL reshuffle API.
+   * This function now calls reshuffle API.
    */
   const handleReshuffle = async (productToShuffle: Product, index: number) => {
     if (productToShuffle.locked) return;
@@ -159,7 +152,6 @@ const AIThrifter = () => {
       return;
     }
 
-    // You could add a per-item loading state here
 
     try {
       // 1. Call the reshuffle-item API
@@ -261,7 +253,6 @@ const AIThrifter = () => {
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            // 'multiple' is removed to match backend
             onChange={handleImageUpload}
             className="hidden"
           />
@@ -294,7 +285,6 @@ const AIThrifter = () => {
                     {product.locked ? '🔒' : '🔓'}
                   </Button>
 
-                  {/* Shuffle Button (Now calls API) */}
                   <Button
                     size="sm"
                     onClick={() => handleReshuffle(product, index)}
@@ -303,7 +293,6 @@ const AIThrifter = () => {
                     <RefreshCw className="w-4 h-4" />
                   </Button>
                 </div>
-                {/* Add to Cart Button (Added for functionality) */}
                 <Button
                   size="sm"
                   className="w-full mt-2"
@@ -330,7 +319,7 @@ const AIThrifter = () => {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => removeFromCart(item.id)} // <- Updated
+                    onClick={() => removeFromCart(item.id)}
                   >
                     <X className="w-4 h-4" />
                   </Button>

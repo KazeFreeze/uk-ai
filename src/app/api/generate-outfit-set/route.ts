@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTagsFromText, getTagsFromImage } from '@/app/lib/ollamaAdapter';
-import { loadDb } from '@/app/lib/db';
-import { assembleSetFromTags } from '@/app/lib/outfitLogic';
+import { getTagsFromText, getTagsFromImage } from '@/lib/ollamaAdapter';
+import { loadDb } from '@/lib/db';
+import { assembleSetFromTags } from '@/lib/outfitLogic';
 
 export async function POST(request: NextRequest) {
   try {
     // 1. Load DB ONCE and get 'products'
-    const { available_tags, products } = loadDb(); // <-- Was 'clothes'
+    const { available_tags, products } = loadDb();
 
     // 2. Get form data (text or image)
     const formData = await request.formData();
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Call the Outfit Logic, passing 'products'
-    const outfitSet = assembleSetFromTags(tags, products); // <-- Was 'clothes'
+    const outfitSet = assembleSetFromTags(tags, products);
 
     // 5. Return the result
     return NextResponse.json({ outfit: outfitSet, tags: tags });
