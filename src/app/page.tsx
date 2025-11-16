@@ -9,7 +9,7 @@ import {
   RefreshCw,
   MessageSquare,
   Lock,
-  Unlock
+  Unlock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,18 +40,105 @@ const convertToProduct = (item: ClothingItem): Product => ({
   locked: false,
 });
 
+interface ChatInterfaceProps {
+  messages: { role: string; content: string; images?: string[] }[];
+  isLoading: boolean;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+  input: string;
+  setInput: (value: string) => void;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSend: () => void;
+  selectedFile: File | null;
+}
+
+const ChatInterface: React.FC<ChatInterfaceProps> = ({
+  messages,
+  isLoading,
+  messagesEndRef,
+  input,
+  setInput,
+  fileInputRef,
+  handleImageUpload,
+  handleSend,
+  selectedFile,
+}) => (
+  <>
+    <ScrollArea className="flex-1 p-4">
+      {messages.map((msg, i) => (
+        <div
+          key={i}
+          className={`mb-3 ${msg.role === 'assistant'
+              ? 'text-blue-700'
+              : 'text-gray-900 text-right'
+            }`}
+        >
+          <p className="bg-white inline-block px-3 py-2 rounded-2xl shadow">
+            {msg.content}
+          </p>
+          {(msg as any).images &&
+            (msg as any).images.map((img: string, idx: number) => (
+              <img
+                key={idx}
+                src={img}
+                alt="uploaded"
+                className="mt-2 max-h-40 rounded-lg mx-auto"
+              />
+            ))}
+        </div>
+      ))}
+      {isLoading && messages.length <= 1 && (
+        <div className="flex justify-center items-center p-4">
+          <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
+        </div>
+      )}
+      <div ref={messagesEndRef} />
+    </ScrollArea>
+
+    <div className="p-4 border-t flex gap-2 items-center">
+      <Input
+        placeholder="Type your message..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        disabled={isLoading}
+      />
+      <Button
+        variant="secondary"
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <Upload className="w-4 h-4" />
+      </Button>
+      <Button
+        onClick={handleSend}
+        disabled={isLoading || (!input.trim() && !selectedFile)}
+      >
+        {isLoading ? (
+          <Loader2 className="animate-spin w-4 h-4" />
+        ) : (
+          <Send className="w-4 h-4" />
+        )}
+      </Button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+      />
+    </div>
+  </>
+);
+
 const AIThrifter = () => {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Welcome. How can I help you today?' },
   ]);
   const [input, setInput] = useState('');
-
   const [selectedImagesBase64, setSelectedImagesBase64] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<Product[]>([]);
-
   const [currentTags, setCurrentTags] = useState<string[]>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -71,12 +158,17 @@ const AIThrifter = () => {
       try {
         const res = await fetch('/api/get-products');
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to fetch products.');
+        if (!res.ok)
+          throw new Error(data.error || 'Failed to fetch products.');
         const initialProducts = data.products.map(convertToProduct);
         setProducts(initialProducts);
       } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : "An unknown error occurred.";
-        setMessages((prev) => [...prev, { role: 'assistant', content: `Error: ${msg}` }]);
+        const msg =
+          err instanceof Error ? err.message : 'An unknown error occurred.';
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: `Error: ${msg}` },
+        ]);
       } finally {
         setIsLoading(false);
       }
@@ -135,35 +227,39 @@ const AIThrifter = () => {
       const newProductsFromAPI: Product[] = Object.values(data.outfit)
         .filter((item): item is ClothingItem => item !== null)
         .map(convertToProduct);
-
       const lockedProducts = products.filter((p) => p.locked);
-      const lockedTypes = lockedProducts.map(p => p.type);
-
+      const lockedTypes = lockedProducts.map((p) => p.type);
       const filteredNewProducts = newProductsFromAPI.filter(
         (p) => !lockedTypes.includes(p.type)
       );
       setProducts([...lockedProducts, ...filteredNewProducts]);
-
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "An unknown error occurred.";
-      setMessages((prev) => [...prev, { role: 'assistant', content: `Error: ${msg}` }]);
+      const msg =
+        err instanceof Error ? err.message : 'An unknown error occurred.';
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: `Error: ${msg}` },
+      ]);
     } finally {
       setSelectedFile(null);
       setSelectedImagesBase64([]);
       setIsLoading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const handleReshuffle = async (productToShuffle: Product, index: number) => {
+  const handleReshuffle = async (
+    productToShuffle: Product,
+    index: number
+  ) => {
     if (productToShuffle.locked) return;
     if (currentTags.length === 0) {
-      alert("Please generate an outfit first using the chat.");
+      alert('Please generate an outfit first using the chat.');
       return;
     }
 
-    const lockedProducts = products.filter(p => p.locked);
-    const lockedTags = lockedProducts.flatMap(p => p.tags);
+    const lockedProducts = products.filter((p) => p.locked);
+    const lockedTags = lockedProducts.flatMap((p) => p.tags);
     const combinedTags = [...new Set([...currentTags, ...lockedTags])];
 
     try {
@@ -176,7 +272,6 @@ const AIThrifter = () => {
           exclude_id: productToShuffle.id,
         }),
       });
-
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Failed to reshuffle.');
@@ -192,16 +287,16 @@ const AIThrifter = () => {
         newProductsList[index] = newProduct;
         setProducts(newProductsList);
       }
-
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "An unknown error occurred.";
+      const msg =
+        err instanceof Error ? err.message : 'An unknown error occurred.';
       alert(`Error reshuffling: ${msg}`);
     }
   };
 
   const addToCart = (product: Product) => {
     const newCartItem = { ...product, cartId: crypto.randomUUID() };
-    setCart(prevCart => [...prevCart, newCartItem]);
+    setCart((prevCart) => [...prevCart, newCartItem]);
   };
 
   const removeFromCart = (cartItemId: string) => {
@@ -216,66 +311,20 @@ const AIThrifter = () => {
     setProducts(newProducts);
   };
 
-  const ChatInterface = () => (
-    <>
-      <ScrollArea className="flex-1 p-4">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`mb-3 ${msg.role === 'assistant' ? 'text-blue-700' : 'text-gray-900 text-right'
-              }`}
-          >
-            <p className="bg-white inline-block px-3 py-2 rounded-2xl shadow">
-              {msg.content}
-            </p>
-            {(msg as any).images &&
-              (msg as any).images.map((img: string, idx: number) => (
-                <img
-                  key={idx}
-                  src={img}
-                  alt="uploaded"
-                  className="mt-2 max-h-40 rounded-lg mx-auto"
-                />
-              ))}
-          </div>
-        ))}
-        {isLoading && messages.length <= 1 && (
-          <div className="flex justify-center items-center p-4">
-            <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </ScrollArea>
-
-      <div className="p-4 border-t flex gap-2 items-center">
-        <Input
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={isLoading}
-        />
-        <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
-          <Upload className="w-4 h-4" />
-        </Button>
-        <Button onClick={handleSend} disabled={isLoading || (!input.trim() && !selectedFile)}>
-          {isLoading ?
-            <Loader2 className="animate-spin w-4 h-4" /> : <Send className="w-4 h-4" />}
-        </Button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="hidden"
-        />
-      </div>
-    </>
-  );
-
   return (
     <div className="flex h-screen bg-gray-50 relative">
       <div className="hidden md:flex md:w-2/5 border-r flex-col h-screen">
-        <ChatInterface />
+        <ChatInterface
+          messages={messages}
+          isLoading={isLoading}
+          messagesEndRef={messagesEndRef}
+          input={input}
+          setInput={setInput}
+          fileInputRef={fileInputRef}
+          handleImageUpload={handleImageUpload}
+          handleSend={handleSend}
+          selectedFile={selectedFile}
+        />
       </div>
 
       {isChatOpen && (
@@ -288,7 +337,17 @@ const AIThrifter = () => {
           >
             <X className="w-6 h-6" />
           </Button>
-          <ChatInterface />
+          <ChatInterface
+            messages={messages}
+            isLoading={isLoading}
+            messagesEndRef={messagesEndRef}
+            input={input}
+            setInput={setInput}
+            fileInputRef={fileInputRef}
+            handleImageUpload={handleImageUpload}
+            handleSend={handleSend}
+            selectedFile={selectedFile}
+          />
         </div>
       )}
 
@@ -298,14 +357,22 @@ const AIThrifter = () => {
         </h2>
         <div className="grid grid-cols-[repeat(auto-fill,280px)] gap-4 justify-start">
           {products.map((product, index) => (
-            <Card key={`${product.id}-${index}`} className="hover:shadow-lg transition w-[280px] h-[340px] flex flex-col">
+            <Card
+              key={`${product.id}-${index}`}
+              className="hover:shadow-lg transition w-[280px] h-[340px] flex flex-col"
+            >
               <CardContent className="p-3 flex flex-col h-full">
                 <img
                   src={product.image}
                   alt={product.name}
                   className="h-32 w-full object-cover rounded-lg"
                 />
-                <h3 className="mt-2 font-semibold truncate" title={product.name}>{product.name}</h3>
+                <h3
+                  className="mt-2 font-semibold truncate"
+                  title={product.name}
+                >
+                  {product.name}
+                </h3>
                 <p className="text-sm text-gray-500">${product.price}</p>
                 <div className="mt-auto">
                   <div className="flex gap-2 mt-2">
@@ -314,9 +381,11 @@ const AIThrifter = () => {
                       size="sm"
                       onClick={() => toggleLock(index)}
                     >
-                      {product.locked ?
-                        <Lock className="w-4 h-4" /> :
-                        <Unlock className="w-4 h-4" />}
+                      {product.locked ? (
+                        <Lock className="w-4 h-4" />
+                      ) : (
+                        <Unlock className="w-4 h-4" />
+                      )}
                     </Button>
 
                     <Button
@@ -347,8 +416,13 @@ const AIThrifter = () => {
           ) : (
             <ul>
               {cart.map((item) => (
-                <li key={item.cartId} className="flex justify-between items-center mb-2">
-                  <span className="truncate w-1/2" title={item.name}>{item.name}</span>
+                <li
+                  key={item.cartId}
+                  className="flex justify-between items-center mb-2"
+                >
+                  <span className="truncate w-1/2" title={item.name}>
+                    {item.name}
+                  </span>
                   <span>${item.price}</span>
                   <Button
                     variant="destructive"
@@ -362,7 +436,9 @@ const AIThrifter = () => {
             </ul>
           )}
           {cart.length > 0 && (
-            <div className="mt-4 font-semibold">Total: ${totalPrice.toFixed(2)}</div>
+            <div className="mt-4 font-semibold">
+              Total: ${totalPrice.toFixed(2)}
+            </div>
           )}
         </div>
 
