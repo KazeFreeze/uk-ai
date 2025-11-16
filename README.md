@@ -36,7 +36,7 @@ Run the AI in Docker (stable) but the App locally (fast iteration).
 
 1. **Start the AI Service Only:**
 ```bash
-   docker-compose up ollama
+   docker compose up ollama
 ```
 
    > **Note:** The first time you run this, it may take a few minutes to download the `llava:7b` model (approx 4GB).
@@ -59,7 +59,7 @@ Run everything inside containers.
 
 1. **Start All Services:**
 ```bash
-   docker-compose up --build
+   docker compose up --build
 ```
 
 2. **Access the App:**
