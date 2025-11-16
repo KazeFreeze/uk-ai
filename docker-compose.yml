@@ -7,9 +7,10 @@ services:
     container_name: ollama_service
     restart: unless-stopped
     ports:
-      - "11435:11434" # Changed to 11435
+      - "11435:11434" # Host port 11435 -> Container port 11434
     volumes:
       - ollama_data:/root/.ollama
+    command: sh -c "ollama serve & ollama pull llava:7b & wait"
 
   # 2. Your Next.js App
   app:
@@ -20,7 +21,7 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=development
-      - OLLAMA_HOST=http://ollama:11434 # Internal still uses 11434
+      - OLLAMA_HOST=http://ollama:11434 # Internal Docker network name
       - PORT=3000
     ports:
       - "3000:3000"
